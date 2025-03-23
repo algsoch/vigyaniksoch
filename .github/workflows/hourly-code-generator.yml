@@ -23,26 +23,242 @@ jobs:
         with:
           python-version: '3.10'
       
-      - name: Generate code examples
+      - name: Create directories
         run: |
-          # Get current time for filenames
-          TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-          
-          # Create directories if they don't exist
           mkdir -p python_examples
           mkdir -p html_examples
           mkdir -p c_examples
-          
-          # Create Python example
-          cat > "python_examples/example_${TIMESTAMP}.py" << 'EOF'
+      
+      - name: Generate Python example
+        run: |
+          TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+          cat > python_examples/example_${TIMESTAMP}.py << 'PYEOF'
 #!/usr/bin/env python3
-'''
-Automatically generated Python example
-Timestamp: $(date)
-'''
+# Automatically generated Python example
+# Timestamp: $(date)
+
 import math
 import random
 from datetime import datetime
 
 def calculate_fibonacci(n):
+    if n <= 0:
+        return 0
+    elif n == 1:
+        return 1
+        
+    fib = [0] * (n + 1)
+    fib[1] = 1
     
+    for i in range(2, n + 1):
+        fib[i] = fib[i - 1] + fib[i - 2]
+    
+    return fib[n]
+
+def generate_random_data(size=10):
+    return [random.randint(1, 100) for _ in range(size)]
+
+def main():
+    now = datetime.now()
+    print(f"Python example generated at: {now}")
+    
+    print("First 10 Fibonacci numbers:")
+    for i in range(1, 11):
+        print(f"Fibonacci({i}) = {calculate_fibonacci(i)}")
+    
+    data = generate_random_data(15)
+    print(f"Random data: {data}")
+    print(f"Average: {sum(data)/len(data):.2f}")
+    print(f"Min: {min(data)}")
+    print(f"Max: {max(data)}")
+    
+    value = random.random() * 10
+    print(f"Random value: {value:.2f}")
+    print(f"Sine: {math.sin(value):.4f}")
+    print(f"Cosine: {math.cos(value):.4f}")
+    print(f"Square root: {math.sqrt(abs(value)):.4f}")
+
+if __name__ == "__main__":
+    main()
+PYEOF
+      
+      - name: Generate HTML example
+        run: |
+          TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+          cat > html_examples/example_${TIMESTAMP}.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatically Generated Example</title>
+    <style>
+        body {font-family:'Segoe UI',sans-serif; line-height:1.6; max-width:800px; margin:0 auto; padding:20px;}
+        header {background-color:#4c6ef5; color:white; padding:1rem; text-align:center; border-radius:5px;}
+        .card {border:1px solid #ddd; border-radius:8px; padding:15px; margin-bottom:20px; box-shadow:0 2px 4px rgba(0,0,0,0.1);}
+        button {background-color:#4c6ef5; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;}
+        button:hover {background-color:#3b5bdb;}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Automatically Generated HTML Example</h1>
+        <p>Generated on $(date)</p>
+    </header>
+    
+    <div class="card">
+        <h2>What is this page?</h2>
+        <p>This is an automatically generated HTML example created by a GitHub Action.</p>
+    </div>
+    
+    <div class="card">
+        <h2>Interactive Counter Example</h2>
+        <p>Current count: <span id="counter">0</span></p>
+        <button onclick="incrementCounter()">Increment</button>
+        <button onclick="resetCounter()">Reset</button>
+    </div>
+    
+    <div class="card">
+        <h2>Random Color Generator</h2>
+        <p>Click the button to generate a random color:</p>
+        <div id="colorBox" style="height:100px; border:1px solid #ddd; margin:10px 0;"></div>
+        <button onclick="generateRandomColor()">Generate Color</button>
+    </div>
+    
+    <script>
+        let count = 0;
+        function incrementCounter() {
+            count++;
+            document.getElementById('counter').textContent = count;
+        }
+        
+        function resetCounter() {
+            count = 0;
+            document.getElementById('counter').textContent = count;
+        }
+        
+        function generateRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            
+            const colorBox = document.getElementById('colorBox');
+            colorBox.style.backgroundColor = color;
+            colorBox.textContent = color;
+        }
+        
+        generateRandomColor();
+    </script>
+</body>
+</html>
+HTMLEOF
+      
+      - name: Generate C example
+        run: |
+          TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+          cat > c_examples/example_${TIMESTAMP}.c << 'CEOF'
+/**
+ * Automatically generated C example
+ * Timestamp: $(date)
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+#include <math.h>
+
+#define MAX_SIZE 100
+#define PI 3.14159265358979323846
+
+typedef struct {
+    double x;
+    double y;
+} Point;
+
+typedef struct {
+    Point center;
+    double radius;
+} Circle;
+
+double distance(Point p1, Point p2) {
+    return sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2));
+}
+
+int isPointInCircle(Point p, Circle c) {
+    return distance(p, c.center) <= c.radius;
+}
+
+Point generateRandomPoint(double min, double max) {
+    Point p;
+    p.x = min + ((double)rand() / RAND_MAX) * (max - min);
+    p.y = min + ((double)rand() / RAND_MAX) * (max - min);
+    return p;
+}
+
+double estimatePi(int numPoints) {
+    Circle circle = {{0.5, 0.5}, 0.5};
+    int pointsInCircle = 0;
+    
+    for (int i = 0; i < numPoints; i++) {
+        Point randomPoint = generateRandomPoint(0.0, 1.0);
+        if (isPointInCircle(randomPoint, circle)) {
+            pointsInCircle++;
+        }
+    }
+    
+    return 4.0 * ((double)pointsInCircle / numPoints);
+}
+
+void sortArray(int arr[], int size) {
+    for (int i = 0; i < size - 1; i++) {
+        for (int j = 0; j < size - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+
+int main() {
+    srand(time(NULL));
+    
+    time_t now = time(NULL);
+    printf("C example generated at: %s\n", ctime(&now));
+    
+    int numPoints = 100000;
+    double piEstimate = estimatePi(numPoints);
+    printf("PI estimate: %f\n", piEstimate);
+    
+    int size = 10;
+    int numbers[MAX_SIZE];
+    
+    printf("Random array: ");
+    for (int i = 0; i < size; i++) {
+        numbers[i] = rand() % 100;
+        printf("%d ", numbers[i]);
+    }
+    printf("\n");
+    
+    sortArray(numbers, size);
+    
+    printf("Sorted array: ");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", numbers[i]);
+    }
+    printf("\n");
+    
+    return 0;
+}
+CEOF
+      
+      - name: Commit and push if there are changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Hourly code examples update"
+          commit_user_name: "GitHub Actions"
+          commit_user_email: "actions@github.com"
+          commit_author: "GitHub Actions <actions@github.com>"
