@@ -34,7 +34,7 @@ jobs:
           mkdir -p c_examples
           
           # Create Python example
-          cat > python_examples/example_${TIMESTAMP}.py << 'EOF'
+          cat > "python_examples/example_${TIMESTAMP}.py" << 'EOF'
 #!/usr/bin/env python3
 '''
 Automatically generated Python example
